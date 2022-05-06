@@ -1,5 +1,6 @@
 import React from "react";
 import { render } from "react-dom";
+import { format } from 'date-fns'
 
 export default class Delivery extends React.Component {
 
@@ -10,7 +11,7 @@ export default class Delivery extends React.Component {
     ]
 
     state = {
-        deliveryId: 0,
+        deliveryId: -1,
         receiverAddress: 0,
         delivererAddress: 0,
         deliveryStatus: [],
@@ -18,14 +19,7 @@ export default class Delivery extends React.Component {
     }
 
     componentDidMount() {
-        console.log("delivery", this.props.accounts);
-        // this.setState({
-        //     packageId: this.props.package["packageId"],
-        //     itemId: this.props.package["itemId"],
-        //     companyAddress: this.props.package["companyAddress"],
-        //     delivererAddress: this.props.package["delivererAddress"],
-        //     consumerAddress: this.props.package["consumerAddress"]
-        // });
+        console.log("delivery accounts", this.props.accounts);
     }
 
     handleInputDeliveryIdChange = (e) => {
@@ -35,12 +29,14 @@ export default class Delivery extends React.Component {
     handleDeliveryStatus = async (e) => {
         e.preventDefault();
         
-        const {accounts, contract} = this.state;
-        var deliveryIds = await this.props.contract.methods.getDeliveryIds().call();
-        console.log("ids",deliveryIds)
-        var status = await this.props.contract.methods.returnStatus(this.state.deliveryId, 0).call();
-        console.log("status", status);
-        // this.setState({deliveryId: deliveryId});
+        var statusIds = await this.props.contract.methods.getStatusIdsForDelivery(this.state.deliveryId).call();
+        console.log("ids",statusIds)
+        this.setState({statusIds: statusIds});
+
+        var statuses = this.state.statusIds.map(x => {return this.props.contract.methods.returnStatus(this.state.deliveryId, x).call()});
+        statuses  = await Promise.all(statuses);
+        console.log("status", statuses);
+        this.setState({deliveryStatus: statuses});
     }
 
     render(){
@@ -49,17 +45,14 @@ export default class Delivery extends React.Component {
                 <form onSubmit={this.handleDeliveryStatus}>
                     <label>Get info about package with id:</label>
                     <input type="number" value={this.state.deliveryId} onChange={this.handleInputDeliveryIdChange}/>
-                    <button>Order</button>
+                    <button>Check status</button>
                 </form>
-
-
-
-                <h1>Status: {this.Status[this.state.deliveryStatus]}</h1>
-                <p>consumer: {this.state.consumerAddress}</p>
-                <p>company: {this.state.companyAddress}</p>
-                <p>itemId: {this.state.itemId}</p>
-                <p>packageId: {this.state.packageId}</p>
-                {/* {this.state.deliveryStatus < 5 ? <button onClick={() => this.props.handleStatusChange(this.state.packageId)}>{this.Status[Number(this.state.deliveryStatus)+1]}</button> : ""} */}
+                {this.state.deliveryStatus ? this.state.deliveryStatus.map(x => <div style={{border: "1px solid black"}}>
+                    <h1>Status: {this.Status[x.status]}</h1>
+                    <h1>Date: {Date(x.time)}</h1>
+                    <h1>Localisation: {x.localisation}</h1>
+                    <h1>Additional info: {x.info}</h1>
+                    </div>) : ""}
             </div>
         );
     }

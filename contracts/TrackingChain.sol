@@ -18,7 +18,6 @@ contract TrackingChain {
         uint deliveryId;
         address delivererAddress;
         address receiverAddress;
-        // DeliveryStatus[] deliveryStatus;
         mapping(uint => DeliveryStatus) deliveryStatus;
         uint[] deliveryStatusIds;
     }
@@ -85,6 +84,10 @@ contract TrackingChain {
 
     function getStatusIdsForDelivery(uint _deliveryId) public view returns(uint[] memory) {
         return deliveries[_deliveryId].deliveryStatusIds;
+    }
+
+    function getLastStatusIdsForDelivery(uint _deliveryId) public view returns(DeliveryStatus memory) {
+        return deliveries[_deliveryId].deliveryStatus[deliveryStatusIds[deliveryStatusIds.length-1]];
     }
 
     function returnStatus(uint _deliveryId, uint _statusId) public view returns(DeliveryStatus memory){
