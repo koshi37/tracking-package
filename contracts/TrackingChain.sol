@@ -87,7 +87,12 @@ contract TrackingChain {
     }
 
     function getLastStatusIdsForDelivery(uint _deliveryId) public view returns(DeliveryStatus memory) {
-        return deliveries[_deliveryId].deliveryStatus[deliveryStatusIds[deliveryStatusIds.length-1]];
+        uint id = 0;
+        if(deliveries[_deliveryId].deliveryStatusIds.length > 0) {
+            id = deliveries[_deliveryId].deliveryStatusIds.length-1;
+        }
+        uint statusId = deliveries[_deliveryId].deliveryStatusIds[id];
+        return deliveries[_deliveryId].deliveryStatus[statusId];
     }
 
     function returnStatus(uint _deliveryId, uint _statusId) public view returns(DeliveryStatus memory){

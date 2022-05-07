@@ -5,6 +5,9 @@ import Delivery from "./components/Delivery";
 import NewDelivery from "./components/NewDelivery"
 
 import "./App.css";
+import Navbar from "./components/Navbar";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import UpdateDelivery from "./components/UpdateDelivery";
 
 class App extends Component {
   state = { storageValue: 0, web3: null, accounts: null, contract: null };
@@ -27,7 +30,8 @@ class App extends Component {
 
       // Set web3, accounts, and contract to the state, and then proceed with an
       // example of interacting with the contract's methods.
-      this.setState({ web3, accounts, contract: instance }, this.runExample);
+      this.setState({ web3, accounts, contract: instance });
+      // this.setState({ web3, accounts, contract: instance }, this.runExample);
     } catch (error) {
       // Catch any errors for any of the above operations.
       alert(
@@ -56,8 +60,14 @@ class App extends Component {
     }
     return (
       <div className="App">
-        <Delivery contract={this.state.contract} accounts={this.state.accounts}/>
-        <NewDelivery contract={this.state.contract} accounts={this.state.accounts}/>
+        <Navbar/>
+        <Routes>
+          <Route path="/" element={<Delivery contract={this.state.contract} accounts={this.state.accounts} />} />
+          {/* <Delivery contract={this.state.contract} accounts={this.state.accounts}/> */}
+          <Route path="/newdelivery" element={<NewDelivery contract={this.state.contract} accounts={this.state.accounts} />} />
+          <Route path="/updatedelivery" element={<UpdateDelivery contract={this.state.contract} accounts={this.state.accounts} />} />
+          {/* <NewDelivery contract={this.state.contract} accounts={this.state.accounts}/> */}
+        </Routes>
       </div>
     );
   }

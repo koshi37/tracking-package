@@ -1,6 +1,5 @@
 import React from "react";
-import { render } from "react-dom";
-import { format } from 'date-fns'
+import "./../styles/Delivery.css";
 
 export default class Delivery extends React.Component {
 
@@ -19,6 +18,7 @@ export default class Delivery extends React.Component {
     }
 
     componentDidMount() {
+        console.log(this.props)
         console.log("delivery accounts", this.props.accounts);
     }
 
@@ -41,7 +41,7 @@ export default class Delivery extends React.Component {
 
     render(){
         return(
-            <div style={{border:"1px solid black"}}>
+            <div className="deliveryBox">
                 <form onSubmit={this.handleDeliveryStatus}>
                     <label>Get info about package with id:</label>
                     <input type="number" value={this.state.deliveryId} onChange={this.handleInputDeliveryIdChange}/>

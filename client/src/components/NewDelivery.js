@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import "./../styles/NewDelivery.css";
 
 export default class NewDelivery extends React.Component {
 
@@ -55,7 +56,7 @@ export default class NewDelivery extends React.Component {
 
     render() {
         return(
-            <div>
+            <div className="formBox">
                 <form onSubmit={this.handleDeliveryPrepared}>
                     <label>Odbiorca</label>
                     <input type="text" value={this.state.receiverAddress} onChange={this.handleReceiverChange}/>
@@ -63,9 +64,9 @@ export default class NewDelivery extends React.Component {
                     <input type="text" value={this.state.localisation} onChange={this.handleLocalisationChange}/>
                     <label>Informacje dodatkowe</label>
                     <input type="text" value={this.state.info} onChange={this.handleInfoChange}/>
-                    <button>Prepared to delivery</button>
+                    <button>Create new tracking</button>
                 </form>
-                <form onSubmit={this.handleUpdateDeliveryStatus}>
+                {/* <form onSubmit={this.handleUpdateDeliveryStatus}>
                     <label>Package Id</label>
                     <input type="number" value={this.state.deliveryId} onChange={this.handleDeliveryIdChange}/>
                     <label>Lokalizacja</label>
@@ -82,7 +83,7 @@ export default class NewDelivery extends React.Component {
                     <label>Informacje dodatkowe</label>
                     <input type="text" value={this.state.info} onChange={this.handleInfoChange}/>
                     <button>Delivered</button>
-                </form>
+                </form> */}
                 {this.state.deliveryId != null ? <p>Id: {this.state.deliveryId}</p> : ""}
             </div>
         );
