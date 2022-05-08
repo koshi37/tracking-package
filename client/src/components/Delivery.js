@@ -1,59 +1,75 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import "./../styles/Delivery.css";
+import { format } from 'date-fns';
 
-export default class Delivery extends React.Component {
+export default function Delivery(props) {
 
-    Status = [
+    const Status = [
         "Prepared", //company prepared package for shipment
         "InDelivery", //package in shipment
         "Delivered", // package delivered
     ]
 
-    state = {
-        deliveryId: -1,
-        receiverAddress: 0,
-        delivererAddress: 0,
-        deliveryStatus: [],
-        statusIds: []
-    }
+    const statusColor = [
+        "#FF6A6A",
+        "#FFC558",
+        "#6CFF6C"
+    ]
 
-    componentDidMount() {
-        console.log(this.props)
-        console.log("delivery accounts", this.props.accounts);
-    }
+    // state = {
+    //     deliveryId: 0,
+    //     receiverAddress: 0,
+    //     delivererAddress: 0,
+    //     deliveryStatus: [],
+    //     statusIds: []
+    // }
 
-    handleInputDeliveryIdChange = (e) => {
+    let {id} = useParams();
+    const [deliveryId, setDeliveryId] = useState(0);
+    const [receiverAddress, setReceiverAddress] = useState(0);
+    const [delivererAddress, setDelivererAddress] = useState(0);
+    const [deliveryStatus, setDeliveryStatus] = useState([]);
+    const [statusIds, setStatusIds] = useState([]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            var statusIds = await props.contract.methods.getStatusIdsForDelivery(id).call();
+            console.log("ids",statusIds);
+            setStatusIds(statusIds);
+
+            var statuses = statusIds.map(x => {return props.contract.methods.returnStatus(id, x).call()});
+            statuses  = await Promise.all(statuses);
+            console.log("status", statuses);
+            setDeliveryStatus(statuses);
+        }
+        fetchData();
+    },[]);
+
+    const handleInputDeliveryIdChange = (e) => {
         this.setState({deliveryId: e.target.value});
     }
 
-    handleDeliveryStatus = async (e) => {
+    const handleDeliveryStatus = async (e) => {
         e.preventDefault();
         
-        var statusIds = await this.props.contract.methods.getStatusIdsForDelivery(this.state.deliveryId).call();
-        console.log("ids",statusIds)
-        this.setState({statusIds: statusIds});
-
-        var statuses = this.state.statusIds.map(x => {return this.props.contract.methods.returnStatus(this.state.deliveryId, x).call()});
-        statuses  = await Promise.all(statuses);
-        console.log("status", statuses);
-        this.setState({deliveryStatus: statuses});
+        
     }
 
-    render(){
-        return(
-            <div className="deliveryBox">
-                <form onSubmit={this.handleDeliveryStatus}>
-                    <label>Get info about package with id:</label>
-                    <input type="number" value={this.state.deliveryId} onChange={this.handleInputDeliveryIdChange}/>
-                    <button>Check status</button>
-                </form>
-                {this.state.deliveryStatus ? this.state.deliveryStatus.map(x => <div style={{border: "1px solid black"}}>
-                    <h1>Status: {this.Status[x.status]}</h1>
-                    <h1>Date: {Date(x.time)}</h1>
-                    <h1>Localisation: {x.localisation}</h1>
-                    <h1>Additional info: {x.info}</h1>
-                    </div>) : ""}
-            </div>
-        );
-    }
+    
+    return(
+        deliveryStatus.length ? <div>
+            <h1>History for package (id: {id})</h1>
+            {deliveryStatus.reverse().map(x => <div className="deliveryBox">
+                <h1 className="status" style={{backgroundColor: statusColor[x.status]}}>{Status[x.status]}</h1>
+                <p className="date">{format(new Date(x.time*1000),'EEEE MM/dd/yyyy HH:mm') }</p>
+                <div className="infoBox">
+                    <label>Localisation</label>
+                    <p className="info">{x.localisation}</p>
+                    <label>Additional info</label>
+                    <p className="info">{x.info}</p>
+                </div>
+            </div>)}
+        </div> : <p className="deliveryBox">There is no package with such ID</p>
+    );
 }

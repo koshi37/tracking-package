@@ -34,16 +34,19 @@ contract TrackingChain {
 
     mapping(uint => Delivery) deliveries;
 
+    mapping(address => uint[]) delivererDeliveries;
+    mapping(address => uint[]) receiverDeliveries;
+
     event Prepared(uint deliveryId);
     event InDelivery(uint deliveryId);
     event UpdatedPackageStatus(uint deliveryId);
     event Delivered(uint deliveryId);
 
-    function prepareDelivery(address _delivererAddress, address _receiverAddress, string memory _localisation, string memory _info) public returns(uint){
+    function prepareDelivery(address _receiverAddress, string memory _localisation, string memory _info) public returns(uint){
         uint _deliveryId = deliveryIds.length;
 
         deliveries[_deliveryId].deliveryId = _deliveryId;
-        deliveries[_deliveryId].delivererAddress = _delivererAddress;
+        deliveries[_deliveryId].delivererAddress = msg.sender;
         deliveries[_deliveryId].receiverAddress = _receiverAddress;
         deliveryIds.push(_deliveryId);
 
@@ -54,6 +57,9 @@ contract TrackingChain {
         deliveries[_deliveryId].deliveryStatus[_statusId].time = block.timestamp;
         deliveries[_deliveryId].deliveryStatus[_statusId].localisation = _localisation;
         deliveries[_deliveryId].deliveryStatus[_statusId].info = _info;
+
+        delivererDeliveries[msg.sender].push(_deliveryId);
+        receiverDeliveries[_receiverAddress].push(_deliveryId);
 
         return _deliveryId;
     }
@@ -80,6 +86,14 @@ contract TrackingChain {
 
     function getDeliveryIds() public view returns(uint[] memory) {
         return deliveryIds;
+    }
+
+    function getReceiverDeliveryIds() public view returns(uint[] memory) {
+        return receiverDeliveries[msg.sender];
+    }
+
+    function getDelivererDeliveryIds() public view returns(uint[] memory) {
+        return delivererDeliveries[msg.sender];
     }
 
     function getStatusIdsForDelivery(uint _deliveryId) public view returns(uint[] memory) {

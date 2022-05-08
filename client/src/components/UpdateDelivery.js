@@ -1,72 +1,56 @@
-import React, { Component } from "react";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import "./../styles/NewDelivery.css";
 
-export default class UpdateDelivery extends React.Component {
+export default function UpdateDelivery(props) {
 
-    state = {
-        delivererAddress: "",
-        receiverAddress: "",
-        localisation: "",
-        info: "",
-        deliveryId: null
+    const [localisation, setLocalisation] = useState("");
+    const [info, setInfo] = useState("");
+    const [option, setOption] = useState(0);
+
+    let {id} = useParams();
+
+    const handleLocalisationChange = (e) => {
+        setLocalisation(e.target.value);
     }
 
-    async componentDidMount() {
-        // var response = await this.props.contract.methods.getLastStatusIdsForDelivery(0);
-    }
-
-    handleReceiverChange = (e) => {
-        this.setState({receiverAddress: e.target.value});
-    }
-
-    handleLocalisationChange = (e) => {
-        this.setState({localisation: e.target.value});
-    }
-
-    handleInfoChange = (e) => {
-        this.setState({info: e.target.value});
-    }
-
-    handleDeliveryIdChange = (e) => {
-        this.setState({deliveryId: e.target.value});
+    const handleInfoChange = (e) => {
+        setInfo(e.target.value);
     }
     
-    handleOptionChange = (e) => {
-        this.setState({option: e.target.value});
+    const handleOptionChange = (e) => {
+        setOption(e.target.value);
     }
 
-    handleDelivered = async (e) => {
+    const handleUpdateDeliveryStatus = async (e) => {
         e.preventDefault();
         console.log("wtf");
-        if(this.state.option == 0) {
-            var response = await this.props.contract.methods.updateDeliveryStatus(this.state.deliveryId, this.state.localisation, this.state.info).send({ from: this.props.accounts[0] });
+        if(option == 0) {
+            var response = await props.contract.methods.updateDeliveryStatus(id, localisation, info).send({ from: props.accounts[0] });
             console.log("update response", response);
         }
         else {
-            var response = await this.props.contract.methods.deliveredStatus(this.state.deliveryId, this.state.localisation, this.state.info).send({ from: this.props.accounts[0] });
+            var response = await props.contract.methods.deliveredStatus(id, localisation, info).send({ from: props.accounts[0] });
             console.log("update response", response);
         }
         // this.setState({deliveryId: deliveryId});
         
     }
 
-    render() {
-        return(
-            <div className="formBox">
-                <form onSubmit={this.handleUpdateDeliveryStatus}>
-                    <label>Package Id</label>
-                    <input type="number" value={this.state.deliveryId} onChange={this.handleDeliveryIdChange}/>
-                    <label>Lokalizacja</label>
-                    <input type="text" value={this.state.localisation} onChange={this.handleLocalisationChange}/>
-                    <label>Informacje dodatkowe</label>
-                    <input type="text" value={this.state.info} onChange={this.handleInfoChange}/>
-                    <select value={this.state.option} onChange={this.handleOptionChange} style={{width: "fit-content"}}>
-                        <option value={0}>In Delivery</option>
-                        <option value={1}>Delivered</option>
-                    </select>
-                    <button>Update status</button>
-                </form>
-            </div>
-        );
-    }
+    return(
+        <div className="formBox">
+            <form onSubmit={handleUpdateDeliveryStatus}>
+                <h1>Package Id: {id}</h1>
+                <label>Lokalizacja</label>
+                <input type="text" value={localisation} onChange={handleLocalisationChange}/>
+                <label>Informacje dodatkowe</label>
+                <input type="text" value={info} onChange={handleInfoChange}/>
+                <select value={option} onChange={handleOptionChange} style={{width: "fit-content"}}>
+                    <option value={0}>In Delivery</option>
+                    <option value={1}>Delivered</option>
+                </select>
+                <button>Update status</button>
+            </form>
+        </div>
+    );
 }

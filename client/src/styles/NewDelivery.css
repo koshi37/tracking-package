@@ -28,6 +28,12 @@
     font-size: 20px;
 }
 
+/* remove arrows from input field */
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
 .formBox button {
     width: fit-content;
     margin-left: auto;
@@ -35,5 +41,20 @@
 
 
 .formBox button:hover {
+    background-color: #f76464;
+}
+
+.buttonStyling{
+    display: block;
+    width: fit-content;
+    padding: .5rem .8rem .5rem .8rem;
+    margin: .9vw 0 ;
+    border:0;
+    border-radius: 5px;
+    font-size: 20px;
+    text-decoration: none;
+}
+
+.buttonStyling:hover {
     background-color: #f76464;
 }

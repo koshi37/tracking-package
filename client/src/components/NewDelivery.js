@@ -8,7 +8,8 @@ export default class NewDelivery extends React.Component {
         receiverAddress: "",
         localisation: "",
         info: "",
-        deliveryId: null
+        deliveryId: null,
+        added: false
     }
 
     async componentDidMount() {
@@ -33,10 +34,13 @@ export default class NewDelivery extends React.Component {
 
     handleDeliveryPrepared = async (e) => {
         e.preventDefault();
-        var deliveryId = await this.props.contract.methods.prepareDelivery(this.state.receiverAddress, this.state.receiverAddress, this.state.localisation, this.state.info).call({ from: this.props.accounts[0] });
-        await this.props.contract.methods.prepareDelivery(this.state.receiverAddress, this.state.receiverAddress, this.state.localisation, this.state.info).send({ from: this.props.accounts[0] });
+        var deliveryId = await this.props.contract.methods.prepareDelivery(this.state.receiverAddress, this.state.localisation, this.state.info).call({ from: this.props.accounts[0] });
+        await this.props.contract.methods.prepareDelivery(this.state.receiverAddress, this.state.localisation, this.state.info).send({ from: this.props.accounts[0] });
         // this.setState({deliveryId: deliveryId});
-        console.log("deliveryId", deliveryId);
+        if(deliveryId)
+        {
+            this.setState({deliveryId: deliveryId, added: true});
+        }
     }
 
     handleUpdateDeliveryStatus = async (e) => {
@@ -57,6 +61,7 @@ export default class NewDelivery extends React.Component {
     render() {
         return(
             <div className="formBox">
+                {!this.state.added ?
                 <form onSubmit={this.handleDeliveryPrepared}>
                     <label>Odbiorca</label>
                     <input type="text" value={this.state.receiverAddress} onChange={this.handleReceiverChange}/>
@@ -65,7 +70,7 @@ export default class NewDelivery extends React.Component {
                     <label>Informacje dodatkowe</label>
                     <input type="text" value={this.state.info} onChange={this.handleInfoChange}/>
                     <button>Create new tracking</button>
-                </form>
+                </form> : <p>Created new delivery tracking with ID: {this.state.deliveryId}</p>}
                 {/* <form onSubmit={this.handleUpdateDeliveryStatus}>
                     <label>Package Id</label>
                     <input type="number" value={this.state.deliveryId} onChange={this.handleDeliveryIdChange}/>

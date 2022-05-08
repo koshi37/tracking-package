@@ -13,7 +13,7 @@
 
 .deliveryBox label{
     display: block;
-    text-align: center;
+    text-align: left;
     font-size: 20px;
     margin: 0 0 2vh 0;
 }
@@ -32,4 +32,38 @@
 .deliveryBox button {
     width: fit-content;
     margin-left: auto;
+}
+
+
+.packageId {
+    float: left;
+    display: inline-block;
+}
+
+.status {
+    display: inline-block;
+    border: 1px solid black;
+    background-color: rgb(255, 106, 106);
+    width: fit-content;
+    padding: 10px;
+    color: white;
+    float: right;
+}
+
+.date {
+    width: fit-content;
+}
+
+.infoBox {
+    text-align: left;
+    background-color: #ffe0e0;
+    border: 1px solid #8d0404;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.info {
+    font-size: 25px;
+    color: black;
+    font-weight: 600;
 }

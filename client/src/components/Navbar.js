@@ -19,7 +19,7 @@ export default class Navbar extends React.Component {
                     <NavLink to="/newdelivery" className={({ isActive }) => (isActive ? 'active' : 'inactive')} exact activeStyle={{backgroundColor: "red"}}>
                         New delivery
                     </NavLink>
-                    <NavLink to="/updatedelivery" className={({ isActive }) => (isActive ? 'active' : 'inactive')} exact>
+                    <NavLink to="/updateDeliveryList" className={({ isActive }) => (isActive ? 'active' : 'inactive')} exact>
                         Update delivery status
                     </NavLink>
                 </div>

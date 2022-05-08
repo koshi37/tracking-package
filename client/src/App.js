@@ -8,6 +8,9 @@ import "./App.css";
 import Navbar from "./components/Navbar";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import UpdateDelivery from "./components/UpdateDelivery";
+import ReceiverList from "./components/ReceiverList";
+import ReceiverPage from "./components/ReceiverPage";
+import DelivererList from "./components/DelivererList";
 
 class App extends Component {
   state = { storageValue: 0, web3: null, accounts: null, contract: null };
@@ -62,11 +65,12 @@ class App extends Component {
       <div className="App">
         <Navbar/>
         <Routes>
-          <Route path="/" element={<Delivery contract={this.state.contract} accounts={this.state.accounts} />} />
-          {/* <Delivery contract={this.state.contract} accounts={this.state.accounts}/> */}
+          <Route path="/" element={<ReceiverPage contract={this.state.contract} accounts={this.state.accounts} />} />
+          <Route path="/deliveryList" element={<ReceiverList contract={this.state.contract} accounts={this.state.accounts} />} />
+          <Route path="/delivery/:id" element={<Delivery contract={this.state.contract} accounts={this.state.accounts} />} />
           <Route path="/newdelivery" element={<NewDelivery contract={this.state.contract} accounts={this.state.accounts} />} />
-          <Route path="/updatedelivery" element={<UpdateDelivery contract={this.state.contract} accounts={this.state.accounts} />} />
-          {/* <NewDelivery contract={this.state.contract} accounts={this.state.accounts}/> */}
+          <Route path="/updateDeliveryList" element={<DelivererList contract={this.state.contract} accounts={this.state.accounts} />} />
+          <Route path="/updateDelivery/:id" element={<UpdateDelivery contract={this.state.contract} accounts={this.state.accounts} />} />
         </Routes>
       </div>
     );
