@@ -8,6 +8,10 @@ contract TrackingChain {
         owner = msg.sender;
     }
 
+    function generateId() public view returns(uint){
+        return (uint(keccak256(abi.encodePacked(block.timestamp)))%1000000000);
+    }
+
     enum Status {
         Prepared, //delivery is prepared to receive by deliverer
         InDelivery, //deliverer took package
@@ -37,13 +41,8 @@ contract TrackingChain {
     mapping(address => uint[]) delivererDeliveries;
     mapping(address => uint[]) receiverDeliveries;
 
-    event Prepared(uint deliveryId);
-    event InDelivery(uint deliveryId);
-    event UpdatedPackageStatus(uint deliveryId);
-    event Delivered(uint deliveryId);
-
     function prepareDelivery(address _receiverAddress, string memory _localisation, string memory _info) public returns(uint){
-        uint _deliveryId = deliveryIds.length;
+        uint _deliveryId = generateId();
 
         deliveries[_deliveryId].deliveryId = _deliveryId;
         deliveries[_deliveryId].delivererAddress = msg.sender;
@@ -65,6 +64,8 @@ contract TrackingChain {
     }
 
     function updateDeliveryStatus(uint _deliveryId, string memory _localisation, string memory _info) public{
+        require(msg.sender == deliveries[_deliveryId].delivererAddress, 'must be deliverer of this package');
+        
         uint _statusId = deliveries[_deliveryId].deliveryStatusIds.length;
         deliveries[_deliveryId].deliveryStatusIds.push(_statusId);
         deliveries[_deliveryId].deliveryStatus[_statusId].statusId = _statusId;
@@ -75,6 +76,8 @@ contract TrackingChain {
     }
 
     function deliveredStatus(uint _deliveryId, string memory _localisation, string memory _info) public {
+        require(msg.sender == deliveries[_deliveryId].delivererAddress, 'must be deliverer of this package');
+        
         uint _statusId = deliveries[_deliveryId].deliveryStatusIds.length;
         deliveries[_deliveryId].deliveryStatusIds.push(_statusId);
         deliveries[_deliveryId].deliveryStatus[_statusId].statusId = _statusId;

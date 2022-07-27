@@ -42,6 +42,7 @@ export default function Delivery(props) {
             statuses  = await Promise.all(statuses);
             console.log("status", statuses);
             setDeliveryStatus(statuses);
+            console.log(statuses)
         }
         fetchData();
     },[]);

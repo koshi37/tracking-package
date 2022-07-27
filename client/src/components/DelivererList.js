@@ -15,7 +15,7 @@ export default class ReceiverList extends React.Component {
         console.log("ids",deliveryIds);
         this.setState({deliveryIds: deliveryIds});
 
-        if(this.state.deliveryIds.length) {
+        if(this.state.deliveryIds!=null && this.state.deliveryIds.length) {
             var deliveries = this.state.deliveryIds.map(x => {
                 var result = this.props.contract.methods.getLastStatusIdsForDelivery(x).call();
                 // result.deliveryId = x;

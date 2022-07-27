@@ -4,7 +4,7 @@
     margin-right: auto;
     max-width: 500px;
     height: max-content;
-    padding: 3vw ;
+    padding: 1vw ;
     position:relative; 
     border: 1px solid #8d0404;
     border-radius: 1%;
@@ -15,14 +15,14 @@
     display: block;
     text-align: center;
     font-size: 20px;
-    margin: 0 0 2vh 0;
+    margin: 10px;
 }
 
 .formBox input, select, button{
     display: block;
-    width: 100%;
+    width: 90%;
     padding: .5rem .8rem .5rem .8rem;
-    margin: .9vw 0 ;
+    margin: auto;
     border:0;
     border-radius: 5px;
     font-size: 20px;
@@ -34,9 +34,11 @@ input::-webkit-inner-spin-button {
     margin: 0;
 }
 
+
 .formBox button {
     width: fit-content;
     margin-left: auto;
+    margin-top: 10px;
 }
 
 

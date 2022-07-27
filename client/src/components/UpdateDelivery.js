@@ -24,7 +24,7 @@ export default function UpdateDelivery(props) {
 
     const handleUpdateDeliveryStatus = async (e) => {
         e.preventDefault();
-        console.log("wtf");
+
         if(option == 0) {
             var response = await props.contract.methods.updateDeliveryStatus(id, localisation, info).send({ from: props.accounts[0] });
             console.log("update response", response);
